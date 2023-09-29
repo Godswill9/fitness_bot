@@ -2,8 +2,78 @@ const container = document.querySelector(".container");
 const designSection = document.querySelector(".designSection");
 const cont = document.querySelector(".cont");
 const innerCont = document.querySelector(".innerCont");
-const sendButton = document.querySelector("button");
+const sendButton = document.querySelector(".sendBut");
 const inputMessage = document.querySelector("input");
+var requestCount = 0;
+var loaderCont = document.querySelector(".loaderCont");
+var inputSection = document.querySelector(".inputSection");
+var allSpans = document.querySelector(`.reciever .options`);
+
+//INTRO ANIMATIONS
+var inner1 = document.querySelectorAll(".inner")[0];
+var inner2 = document.querySelectorAll(".inner")[1];
+var inner3 = document.querySelectorAll(".inner")[2];
+var inner4 = document.querySelectorAll(".inner")[3];
+var startButton = document.querySelector(".introduction .startBut");
+var allIntros = document.querySelector(".introduction");
+
+inputSection.style.display = "none";
+innerCont.style.height = "100%";
+allIntros.style.display = "none";
+setTimeout(() => {
+  designSection.style.display = "none";
+  allIntros.style.display = "block";
+  allIntros.style.zIndex = 3;
+  loadAnimations();
+}, 3000);
+
+function loadAnimations() {
+  setTimeout(() => {
+    inner1.classList.add("animateIntro");
+  }, 100);
+  setTimeout(() => {
+    inner2.classList.add("animateIntro");
+  }, 1000);
+  setTimeout(() => {
+    inner3.classList.add("animateIntro");
+  }, 1500);
+  setTimeout(() => {
+    inner4.classList.add("animateIntro");
+  }, 2000);
+  setTimeout(() => {
+    startButton.classList.add("animateIntro");
+  }, 2500);
+}
+
+function startMessage() {
+  setTimeout(() => {
+    displayOnScreen("Hi, this is asoro automobiles", "reciever", []);
+  }, 1000);
+  setTimeout(() => {
+    displayOnScreen("How may we be of help to your vehicle", "reciever", [
+      "Brake problems",
+      "Oil leaks",
+      "Flat tire",
+      "Overheating",
+      "Describe the issue",
+    ]);
+
+    // function removeLastOption() {
+    //   var allOfThem = allSpans.querySelectorAll("span");
+    //   console.log(allOfThem[allOfThem.length - 2]);
+    //   allOfThem[allOfThem.length - 2].style.display = "none";
+    // }
+    // allSpans ? removeLastOption() : "";
+  }, 2000);
+}
+// startMessage();
+startButton.addEventListener("click", () => {
+  allIntros.classList.add("hideIntro");
+  startMessage();
+  // allIntros.style.zIndex = 2;
+  allIntros.style.display = "none";
+});
+
 // document.addEventListener("DOMContentLoaded", () => {
 //   innerCont.scrollTop += 1000;
 // });
@@ -53,6 +123,9 @@ if (inputMessage.value == "") {
   sendButton.classList.add("blur");
 }
 
+//THIS IS THE TYPING INDICATOR FOR THE USER
+//THIS IS THE TYPING INDICATOR FOR THE USER
+//THIS IS THE TYPING INDICATOR FOR THE USER
 inputMessage.addEventListener("input", (e) => {
   sendButton.disabled = false;
   sendButton.classList.remove("blur");
@@ -62,7 +135,7 @@ inputMessage.addEventListener("input", (e) => {
   //   innerCont.removeChild(animatedCont);
   // }
   if (anime.length == 0 && inputMessage.value !== "") {
-    innerCont.appendChild(animatedCont);
+    // innerCont.appendChild(animatedCont);
     innerCont.scrollTop += 100;
   }
   if (e.target.value == "") {
@@ -141,9 +214,11 @@ function render() {
 
   return messages.join("");
 }
+
+// console.log(render());
 // innerCont.innerHTML = "nothin";
 
-const displayOnScreen = (elem, role) => {
+const displayOnScreen = (elem, role, options) => {
   const superCont = document.createElement("div");
   const cont = document.createElement("div");
   if (role == "sender") {
@@ -153,11 +228,62 @@ const displayOnScreen = (elem, role) => {
     superCont.classList.add("reciever");
     cont.classList.add("recieverInner");
   }
-
   const span = document.createElement("span");
+  var spanLast = document.createElement("span");
   span.innerHTML = elem;
   cont.appendChild(span);
   superCont.appendChild(cont);
+  if (options.length !== 0) {
+    setTimeout(() => {
+      const optionDiv = document.createElement("div");
+      const describe = document.createElement("div");
+      optionDiv.classList.add("options");
+      var lastElem = options[options.length - 1];
+      options.forEach((element, i) => {
+        const span = document.createElement("span");
+        span.innerHTML = element;
+        options[options.length - 1] = "or";
+
+        optionDiv.appendChild(span);
+        cont.appendChild(optionDiv);
+        superCont.appendChild(cont);
+      });
+      const span2 = document.createElement("span");
+      span2.classList.add("spanIn");
+      span2.innerHTML = lastElem;
+      describe.classList.add("describe");
+      describe.appendChild(span2);
+      optionDiv.appendChild(describe);
+      const allMessages = optionDiv.querySelectorAll("span");
+      for (var i = 0; i < allMessages.length; i++) {
+        if (allMessages[i].innerHTML == "or") {
+          allMessages[i].style.display = "none";
+        }
+      }
+      allMessages.forEach((item, i) => {
+        item.addEventListener("click", () => {
+          if (i == allMessages.length - 1) {
+            // console.log("yay");
+            inputSection.style.display = "flex";
+            innerCont.style.height = "85%";
+          } else {
+            inputSection.style.display = "flex";
+            innerCont.style.height = "85%";
+            displayOnScreen(item.innerText, "sender", []);
+            inputMessage.value = "";
+            var animatedCont = addAnimate("reciever");
+            setTimeout(() => {
+              innerCont.appendChild(animatedCont);
+              innerCont.scrollTop += 2000;
+            }, 1000);
+            replyMessage(
+              `My car just developed ${item.innerText}. Pls help me`
+            );
+          }
+        });
+      });
+    }, 500);
+  }
   const anime = document.getElementsByClassName("anime")[0];
   if (anime) {
     innerCont.removeChild(anime);
@@ -165,30 +291,47 @@ const displayOnScreen = (elem, role) => {
   innerCont.appendChild(superCont);
   innerCont.scrollTop += 100;
 };
-
 const replyMessage = async (message) => {
-  var url = "https://api.openai.com/v1/chat/completions";
-  var api_key = "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";
+  // console.log(message);
+  // var url = "http://localhost:8080/chat";
+  var url = "https://chatbot-backend-qpc2.onrender.com/chat";
+  if (requestCount == 5) {
+    displayOnScreen(
+      `You have exceeded your free trial. Restart the request 
+    or kindly<a href="https://asoroautomotive.com/ppec-products/ai-mechanic-chatbot/" class="paymentLink">SUBSCRIBE</a> to our premium package
+    `,
+      "reciever",
+      []
+    );
+    sendButton.disabled = true;
+    sendButton.classList.add("blur");
+    const anime = document.getElementsByClassName("anime")[0];
+    anime ? innerCont.removeChild(anime) : console.log("no animations");
+    return;
+  }
   await fetch(url, {
     method: "POST",
     headers: {
-      "Content-type": "application/json",
-      Authorization: `Bearer ${api_key}`,
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      model: "gpt-3.5-turbo",
-      messages: [
-        {
-          role: "user",
-          content: `always reply very simply as a mechanic and in not more than 30 words. ${message}`,
-        },
-      ],
-    }),
+    body: JSON.stringify({ message: message }),
   })
     .then((res) => res.json())
     .then((res) => {
-      displayOnScreen(res.choices[0].message.content, "reciever");
-      console.log(res.choices[0].message.content);
+      if (res.data == "an error occured") {
+        setTimeout(() => {
+          const anime = document.getElementsByClassName("anime")[0];
+          anime.textContent = "An error occured. Refresh the page";
+          anime.classList.add("errorMessage");
+          sendButton.disabled = true;
+          sendButton.classList.add("blur");
+        }, 1000);
+        return;
+      } else {
+        requestCount += 1;
+        displayOnScreen(res.data, "reciever", []);
+        // console.log(res.data);
+      }
     })
     .catch((err) => {
       alert("no internet");
@@ -199,9 +342,9 @@ const replyMessage = async (message) => {
         sendButton.disabled = true;
         sendButton.classList.add("blur");
       }, 1000);
-      console.log(err);
     });
 };
+
 var count = 0;
 
 sendButton.addEventListener("click", () => {
@@ -217,19 +360,50 @@ sendButton.addEventListener("click", () => {
   if (anime) {
     innerCont.removeChild(anime);
   }
-  displayOnScreen(message, "sender");
+  displayOnScreen(message, "sender", []);
   inputMessage.value = "";
   var animatedCont = addAnimate("reciever");
   setTimeout(() => {
     innerCont.appendChild(animatedCont);
     innerCont.scrollTop += 2000;
   }, 1000);
+  // setTimeout(() => {
   setTimeout(() => {
     replyMessage(message);
-  }, 2000);
+  }, 1200);
+  // }, 2000);
   sendButton.disabled = true;
   sendButton.classList.add("blur");
 });
 
-// // addAnimate("sender");
-// addAnimate("reciever");
+inputMessage.addEventListener("keydown", function (event) {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    sendButton.disabled = false;
+    sendButton.classList.remove("blur");
+    if (inputMessage.value == "") {
+      alert("input a message");
+      return;
+    }
+    designSection.style.opacity = "0.3";
+    const message = inputMessage.value;
+    const anime = document.getElementsByClassName("anime")[0];
+    if (anime) {
+      innerCont.removeChild(anime);
+    }
+    displayOnScreen(message, "sender", []);
+    inputMessage.value = "";
+    var animatedCont = addAnimate("reciever");
+    setTimeout(() => {
+      innerCont.appendChild(animatedCont);
+      innerCont.scrollTop += 2000;
+    }, 1000);
+    // setTimeout(() => {
+    setTimeout(() => {
+      replyMessage(message);
+    }, 1200);
+    // }, 2000);
+    sendButton.disabled = true;
+    sendButton.classList.add("blur");
+  }
+});
