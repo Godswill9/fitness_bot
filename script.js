@@ -291,10 +291,22 @@ const displayOnScreen = (elem, role, options) => {
   innerCont.appendChild(superCont);
   innerCont.scrollTop += 100;
 };
+
+function addDivAfterFullStop(text) {
+  const sentences = text.split("."); // Split the text into sentences
+
+  let modifiedText = "";
+  for (const sentence of sentences) {
+    modifiedText += `<div style="margin-bottom: 10px;">${sentence}</div>`;
+  }
+
+  return modifiedText;
+}
+
 const replyMessage = async (message) => {
   // console.log(message);
-  // var url = "http://localhost:8080/chat";
-  var url = "https://chatbot-backend-qpc2.onrender.com/chat";
+  var url = "http://localhost:8080/chat";
+  // var url = "https://chatbot-backend-qpc2.onrender.com/chat";
   if (requestCount == 5) {
     displayOnScreen(
       `You have exceeded your free trial. Restart the request 
@@ -329,7 +341,7 @@ const replyMessage = async (message) => {
         return;
       } else {
         requestCount += 1;
-        displayOnScreen(res.data, "reciever", []);
+        displayOnScreen(addDivAfterFullStop(res.data), "reciever", []);
         // console.log(res.data);
       }
     })
