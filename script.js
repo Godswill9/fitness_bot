@@ -237,7 +237,7 @@ const displayOnScreen = (elem, role, options, addDes) => {
     var message =
       "Hi, respond as a fitness expert. Give me tips for " +
       elem +
-      ".  Let it be detailed but not very long, and let our conversation flow by asking me relevant questions. Thanks";
+      ".  Let it be detailed but not very long, and let our conversation flow by asking me relevant questions, and add emojis too!. Thanks";
     replyMessage(message);
     return;
   }
@@ -397,7 +397,7 @@ sendButton.addEventListener("click", () => {
   designSection.style.opacity = "0.3";
   const message =
     inputMessage.value +
-    ". Pls reply me simply and as a fitness expert. Let it be detailed but not very long, and let our conversation flow by asking me relevant questions. Thanks";
+    ". Pls reply me simply and as a fitness expert. Let it be detailed but not very long, and let our conversation flow by asking me relevant questions, and add emojis too!. Thanks";
   const anime = document.getElementsByClassName("anime")[0];
   if (anime) {
     innerCont.removeChild(anime);
