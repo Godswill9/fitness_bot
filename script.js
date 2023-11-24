@@ -402,7 +402,7 @@ sendButton.addEventListener("click", () => {
   if (anime) {
     innerCont.removeChild(anime);
   }
-  displayOnScreen(message, "sender", []);
+  displayOnScreen(inputMessage.value, "sender", []);
   inputMessage.value = "";
   var animatedCont = addAnimate("reciever");
   setTimeout(() => {
