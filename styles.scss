@@ -15,6 +15,7 @@
         background-color: rgba(255, 255, 255, 0.402);
         top: 50%;
         background: linear-gradient(-45deg, rgba(255, 187, 60, 0.217), rgba(87, 126, 255, 0.165));;
+        // background: linear-gradient(-45deg, rgba(255, 187, 60, 0.217), rgba(87, 126, 255, 0.165));;
         left: 50%;
         transform: translate(-50%, -50%);
         display: flex;
@@ -29,7 +30,8 @@
             background-color: rgb(255, 255, 255);
             // background: linear-gradient( rgb(255, 187, 60), rgb(87, 126, 255));;
         //    color: white;
-           background-color: rgba(255, 166, 0, 0.923);
+        //    background-color: rgba(255, 166, 0, 0.923);
+           background-color: hsl(12, 98%, 52%);;
             // border: 2px solid rgb(232, 50, 9);
             // border: 2px solid  linear-gradient(-45deg, rgba(255, 187, 60, 0.217),white, rgba(87, 126, 255, 0.165));;;
             margin: 5px;
@@ -69,7 +71,7 @@
         }
         .startBut{
             padding: 7px;
-            background-color: rgb(255, 102, 0);
+            background-color: hsl(19, 98%, 52%);
             color: white;
             border: 1px solid inherit;
             border-radius: 5px;
@@ -80,6 +82,8 @@
             transform: translateY(200%);
             transition: 1s ease-in-out;
             margin: 5px;
+            // color:hsl(19, 98%, 52%);
+            // background-color: white;
         }
         .animateIntro{
             transform: translate(0%);
@@ -109,7 +113,9 @@
     align-items: center;
     justify-content: center;
     font-family: sans-serif;
-    background: linear-gradient(-45deg, rgb(87, 126, 255), white, rgb(255, 187, 60));;
+    // background: linear-gradient(-45deg, white, green);;
+    background:white;
+    background: linear-gradient(50deg ,rgb(32, 37, 50) 50%, hsl(19, 98%, 52%) 50%);;
     background-blend-mode:darken;
    background-repeat: no-repeat;
    overflow: hidden;
@@ -199,7 +205,8 @@
         justify-content: center;
         // border: 1px solid black;
         margin: 10px;
-        background-color: rgb(255, 113, 57);
+        // background-color: rgb(255, 113, 57);
+        background-color: hsl(12, 98%, 52%);;
         color: white;
         padding: 10px;
         border-radius: 10px;
@@ -431,6 +438,7 @@
             }
           
         }
+        .reciever2,
         .reciever{
             z-index: 2;
             // border: 1px solid black;
@@ -482,6 +490,7 @@
                         margin: 2px;
                         font-family: monospace;
                         cursor: pointer;
+                        font-size:13px ;
                     }
                     .describe{
                         width: 15.5em;
@@ -498,6 +507,10 @@
                     .hide{
                         display: none;
                     }
+                }
+                span{
+                    max-width: 18em;
+                    line-height: 1.4em;
                 }
                     }
                     .dots{
@@ -530,6 +543,12 @@
                         }
                     }
             
+        }
+        .reciever2{
+            span{
+            border: 1px solid rgb(6, 31, 42);
+            background-color: rgb(6, 55, 57);
+            }
         }
         
        }
@@ -599,6 +618,7 @@
         }
     }
 }
+
 
 
 

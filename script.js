@@ -47,23 +47,20 @@ function loadAnimations() {
 
 function startMessage() {
   setTimeout(() => {
-    displayOnScreen("Hi, this is asoro automobiles", "reciever", []);
+    displayOnScreen("Hi, this is apex fitness", "reciever", []);
   }, 1000);
   setTimeout(() => {
-    displayOnScreen("How may we be of help to your vehicle", "reciever", [
-      "Brake problems",
-      "Oil leaks",
-      "Flat tire",
-      "Overheating",
-      "Describe the issue",
-    ]);
-
-    // function removeLastOption() {
-    //   var allOfThem = allSpans.querySelectorAll("span");
-    //   console.log(allOfThem[allOfThem.length - 2]);
-    //   allOfThem[allOfThem.length - 2].style.display = "none";
-    // }
-    // allSpans ? removeLastOption() : "";
+    displayOnScreen(
+      "How can we assist you on your fitness journey today?",
+      "reciever",
+      [
+        "Workout Recommendations",
+        "Nutrition & Meal Planning",
+        "Exercise Guides",
+        "Describe what you need",
+      ],
+      "true"
+    );
   }, 2000);
 }
 // startMessage();
@@ -218,12 +215,15 @@ function render() {
 // console.log(render());
 // innerCont.innerHTML = "nothin";
 
-const displayOnScreen = (elem, role, options) => {
+const displayOnScreen = (elem, role, options, addDes) => {
   const superCont = document.createElement("div");
   const cont = document.createElement("div");
   if (role == "sender") {
     superCont.classList.add("sender");
     cont.classList.add("senderInner");
+  } else if (role == "reciever2") {
+    superCont.classList.add("reciever2");
+    cont.classList.add("recieverInner");
   } else {
     superCont.classList.add("reciever");
     cont.classList.add("recieverInner");
@@ -233,27 +233,47 @@ const displayOnScreen = (elem, role, options) => {
   span.innerHTML = elem;
   cont.appendChild(span);
   superCont.appendChild(cont);
-  if (options.length !== 0) {
+  if (!options) {
+    var message =
+      "Hi, respond as a fitness expert. Give me tips for " +
+      elem +
+      ".  Let it be detailed but not very long, and let our conversation flow by asking me relevant questions. Thanks";
+    replyMessage(message);
+    return;
+  }
+  if (options?.length !== 0) {
     setTimeout(() => {
       const optionDiv = document.createElement("div");
       const describe = document.createElement("div");
       optionDiv.classList.add("options");
       var lastElem = options[options.length - 1];
-      options.forEach((element, i) => {
-        const span = document.createElement("span");
-        span.innerHTML = element;
-        options[options.length - 1] = "or";
+      if (addDes == "true") {
+        // options[options.length - 1] = options[options.length - 1];
+        options.forEach((element, i) => {
+          const span = document.createElement("span");
+          span.innerHTML = element;
+          options[options.length - 1] = "or";
 
-        optionDiv.appendChild(span);
-        cont.appendChild(optionDiv);
-        superCont.appendChild(cont);
-      });
-      const span2 = document.createElement("span");
-      span2.classList.add("spanIn");
-      span2.innerHTML = lastElem;
-      describe.classList.add("describe");
-      describe.appendChild(span2);
-      optionDiv.appendChild(describe);
+          optionDiv.appendChild(span);
+          cont.appendChild(optionDiv);
+          superCont.appendChild(cont);
+        });
+        const span2 = document.createElement("span");
+        span2.classList.add("spanIn");
+        span2.innerHTML = lastElem;
+        describe.classList.add("describe");
+        describe.appendChild(span2);
+        optionDiv.appendChild(describe);
+      } else {
+        options.forEach((element, i) => {
+          const span = document.createElement("span");
+          span.innerHTML = element;
+
+          optionDiv.appendChild(span);
+          cont.appendChild(optionDiv);
+          superCont.appendChild(cont);
+        });
+      }
       const allMessages = optionDiv.querySelectorAll("span");
       for (var i = 0; i < allMessages.length; i++) {
         if (allMessages[i].innerHTML == "or") {
@@ -262,7 +282,10 @@ const displayOnScreen = (elem, role, options) => {
       }
       allMessages.forEach((item, i) => {
         item.addEventListener("click", () => {
-          if (i == allMessages.length - 1) {
+          if (
+            i == allMessages.length - 1 &&
+            item.innerText === "Describe what you need"
+          ) {
             // console.log("yay");
             inputSection.style.display = "flex";
             innerCont.style.height = "85%";
@@ -276,9 +299,16 @@ const displayOnScreen = (elem, role, options) => {
               innerCont.appendChild(animatedCont);
               innerCont.scrollTop += 2000;
             }, 1000);
-            replyMessage(
-              `My car just developed ${item.innerText}. Pls help me`
-            );
+
+            var arr = chooseSub(item.textContent);
+            setTimeout(() => {
+              displayOnScreen(
+                "Okay, choose a specific goal",
+                "reciever2",
+                arr,
+                "false"
+              );
+            }, 2000);
           }
         });
       });
@@ -304,23 +334,21 @@ function addDivAfterFullStop(text) {
 }
 
 const replyMessage = async (message) => {
-  // console.log(message);
-  var url = "http://localhost:8080/chat";
-  // var url = "https://chatbot-backend-qpc2.onrender.com/chat";
-  if (requestCount == 5) {
-    displayOnScreen(
-      `You have exceeded your free trial. Restart the request 
-    or kindly<a href="https://asoroautomotive.com/ppec-products/ai-mechanic-chatbot/" class="paymentLink">SUBSCRIBE</a> to our premium package
-    `,
-      "reciever",
-      []
-    );
-    sendButton.disabled = true;
-    sendButton.classList.add("blur");
-    const anime = document.getElementsByClassName("anime")[0];
-    anime ? innerCont.removeChild(anime) : console.log("no animations");
-    return;
-  }
+  var val = `
+  Weight management
+  Injury recovery support
+  General health and wellness advice
+  Exercise Guides:
+  
+  Boosting fitness and health
+  Muscle building
+  Athletic performance improvement
+  Fitness Gear & Equipment Advice:`;
+
+  // var url = "http://localhost:8080/chat";
+  var url = "https://fitness-backend-coe8.onrender.com/chat";
+
+  // displayOnScreen(addDivAfterFullStop(val), "reciever", []);
   await fetch(url, {
     method: "POST",
     headers: {
@@ -367,7 +395,9 @@ sendButton.addEventListener("click", () => {
     return;
   }
   designSection.style.opacity = "0.3";
-  const message = inputMessage.value;
+  const message =
+    inputMessage.value +
+    ". Pls reply me simply and as a fitness expert. Let it be detailed but not very long, and let our conversation flow by asking me relevant questions. Thanks";
   const anime = document.getElementsByClassName("anime")[0];
   if (anime) {
     innerCont.removeChild(anime);
@@ -419,3 +449,33 @@ inputMessage.addEventListener("keydown", function (event) {
     sendButton.classList.add("blur");
   }
 });
+
+var workoutRecommendations = [
+  "Getting healthier",
+  "Losing or maintaining weight",
+  "Building strength and muscles",
+  "Relaxing and reducing stress",
+];
+
+var nutrition = ["Managing weight", "Taking balanced meals"];
+
+var exerciseGuides = [
+  "Boosting fitness and health",
+  "Muscle building",
+  "Athletic performance improvement",
+];
+
+const chooseSub = (i) => {
+  var arr = [];
+  if (i == "Workout Recommendations") {
+    arr = workoutRecommendations;
+  } else if (i == "Nutrition & Meal Planning") {
+    arr = nutrition;
+  } else if (i == "Exercise Guides") {
+    arr = exerciseGuides;
+  } else {
+    return;
+  }
+
+  return arr;
+};
