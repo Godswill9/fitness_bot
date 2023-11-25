@@ -392,7 +392,7 @@ const replyMessage = async (message) => {
           }, 1500);
           return;
         }
-        if (checkForClassPurchase(userMessage)) {
+        if (checkForClassPurchase(message)) {
           displayOnScreen(addDivAfterFullStop(res.data), "receiver", []);
           setTimeout(() => {
             displayOnScreen(
@@ -410,6 +410,7 @@ const replyMessage = async (message) => {
       }
     })
     .catch((err) => {
+      console.log(err);
       // alert("no internet");
       setTimeout(() => {
         const anime = document.getElementsByClassName("anime")[0];
