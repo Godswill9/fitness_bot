@@ -392,7 +392,7 @@ const replyMessage = async (message) => {
           }, 1500);
           return;
         }
-        if (requestCount == 5) {
+        if (requestCount == 3) {
           displayOnScreen(addDivAfterFullStop(res.data), "reciever", []);
           setTimeout(() => {
             displayOnScreen(
@@ -572,6 +572,9 @@ const displayPlans = (arr) => {
           "false"
         );
       }, 5000);
+      setTimeout(() => {
+        window.location.reload();
+      }, 6000);
     });
   });
 
@@ -641,6 +644,11 @@ function checkForClassPurchase(message) {
     "get a training pass",
     "secure class entry",
     "pricing plan",
+    "payment plan",
+    "payment plans",
+    "plans",
+    "plan",
+    "class",
   ];
   const lowerCaseMessage = message.toLowerCase();
 
