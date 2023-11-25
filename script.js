@@ -230,6 +230,7 @@ const displayOnScreen = (elem, role, options, addDes) => {
   }
   const span = document.createElement("span");
   var spanLast = document.createElement("span");
+
   span.innerHTML = elem;
   cont.appendChild(span);
   superCont.appendChild(cont);
@@ -237,7 +238,7 @@ const displayOnScreen = (elem, role, options, addDes) => {
     var message =
       "Hi, respond as a fitness expert. Give me tips for " +
       elem +
-      ".  Let it be detailed but not very long, and let our conversation flow by asking me relevant questions, and add emojis too!. Thanks";
+      ".  Let it be detailed but not more than 60 words, and let our conversation flow by asking me relevant questions, and add emojis too!. Thanks";
     replyMessage(message);
     return;
   }
@@ -289,6 +290,17 @@ const displayOnScreen = (elem, role, options, addDes) => {
             // console.log("yay");
             inputSection.style.display = "flex";
             innerCont.style.height = "85%";
+            inputMessage.focus();
+          } else if (item.innerText.toLocaleLowerCase() == "show plans") {
+            console.log("rice");
+            displayOnScreen(item.innerText, "sender", []);
+            var animatedCont = addAnimate("reciever");
+            innerCont.appendChild(animatedCont);
+            innerCont.scrollTop += 2000;
+            setTimeout(() => {
+              displayOnScreen("Choose a plan below", "reciever", [], "false");
+              displayPlans(plans);
+            }, 3000);
           } else {
             inputSection.style.display = "flex";
             innerCont.style.height = "85%";
@@ -348,13 +360,12 @@ const replyMessage = async (message) => {
   // var url = "http://localhost:8080/chat";
   var url = "https://fitness-backend-coe8.onrender.com/chat";
 
-  // displayOnScreen(addDivAfterFullStop(val), "reciever", []);
   await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ message: message }),
+    body: JSON.stringify({ message: message, numCount: requestCount }),
   })
     .then((res) => res.json())
     .then((res) => {
@@ -369,12 +380,37 @@ const replyMessage = async (message) => {
         return;
       } else {
         requestCount += 1;
+        if (requestCount == 5) {
+          displayOnScreen(addDivAfterFullStop(res.data), "reciever", []);
+          setTimeout(() => {
+            displayOnScreen(
+              "Would you like to checkout our plans?",
+              "reciever2",
+              ["SHOW PLANS"],
+              "false"
+            );
+          }, 1500);
+          return;
+        }
+        if (checkForClassPurchase(userMessage)) {
+          displayOnScreen(addDivAfterFullStop(res.data), "receiver", []);
+          setTimeout(() => {
+            displayOnScreen(
+              "Would you like to checkout our plans?",
+              "reciever2",
+              ["SHOW PLANS"],
+              "false"
+            );
+          }, 1500);
+          return;
+        }
+
         displayOnScreen(addDivAfterFullStop(res.data), "reciever", []);
         // console.log(res.data);
       }
     })
     .catch((err) => {
-      alert("no internet");
+      // alert("no internet");
       setTimeout(() => {
         const anime = document.getElementsByClassName("anime")[0];
         anime.textContent = "An error occured. Refresh the page";
@@ -391,13 +427,13 @@ sendButton.addEventListener("click", () => {
   sendButton.disabled = false;
   sendButton.classList.remove("blur");
   if (inputMessage.value == "") {
-    alert("input a message");
+    // alert("input a message");
     return;
   }
   designSection.style.opacity = "0.3";
   const message =
     inputMessage.value +
-    ". Pls reply me simply and as a fitness expert. Let it be detailed but not very long, and let our conversation flow by asking me relevant questions, and add emojis too!. Thanks";
+    ". Pls reply me simply and as a fitness expert. Let it be detailed but not more than 60 words, and let our conversation flow by asking me relevant questions, and add emojis too!. Thanks";
   const anime = document.getElementsByClassName("anime")[0];
   if (anime) {
     innerCont.removeChild(anime);
@@ -409,11 +445,9 @@ sendButton.addEventListener("click", () => {
     innerCont.appendChild(animatedCont);
     innerCont.scrollTop += 2000;
   }, 1000);
-  // setTimeout(() => {
   setTimeout(() => {
     replyMessage(message);
   }, 1200);
-  // }, 2000);
   sendButton.disabled = true;
   sendButton.classList.add("blur");
 });
@@ -424,7 +458,7 @@ inputMessage.addEventListener("keydown", function (event) {
     sendButton.disabled = false;
     sendButton.classList.remove("blur");
     if (inputMessage.value == "") {
-      alert("input a message");
+      // alert("input a message");
       return;
     }
     designSection.style.opacity = "0.3";
@@ -479,3 +513,140 @@ const chooseSub = (i) => {
 
   return arr;
 };
+
+const displayPlans = (arr) => {
+  const receiver = document.createElement("div");
+  receiver.classList.add("receiver");
+
+  const receiverInner = document.createElement("div");
+  receiverInner.classList.add("receiverInner");
+
+  const plansHTML = arr
+    .map((item) => {
+      return `
+      <div class="indivClass" data-name="${item.name}"> <!-- Added data-name attribute -->
+        <img src="${item.img}" alt="" />
+        <h5 class="name">${item.name}</h5>
+        <div class="session">$${item.priceSession} per session</div>
+        <div class="month">$${item.priceMonth} per month</div>
+        <div class="link" style="display:none;">$${item.link}</div>
+      </div>
+    `;
+    })
+    .join("");
+
+  const contPlans = document.createElement("div");
+  contPlans.classList.add("contPlans");
+  contPlans.innerHTML = plansHTML;
+
+  // Attach click event to each indivClass element
+  const indivClassElements = contPlans.querySelectorAll(".indivClass");
+  indivClassElements.forEach((elem) => {
+    elem.addEventListener("click", () => {
+      const name = elem.querySelector(".name");
+
+      displayOnScreen(name.innerText, "sender", []);
+      var animatedCont = addAnimate("reciever");
+      innerCont.appendChild(animatedCont);
+      innerCont.scrollTop += 2000;
+      setTimeout(() => {
+        displayOnScreen("Great choice!", "reciever", [], "false");
+      }, 2000);
+      innerCont.appendChild(animatedCont);
+      innerCont.scrollTop += 2000;
+      setTimeout(() => {
+        displayOnScreen(
+          "You will now be redirected to payment page.",
+          "reciever",
+          [],
+          "false"
+        );
+      }, 3500);
+      innerCont.appendChild(animatedCont);
+      innerCont.scrollTop += 2000;
+      setTimeout(() => {
+        displayOnScreen(
+          "😊 At the moment, we're not registering users, but we're thrilled you've chosen to connect with us🚀.",
+          "reciever",
+          [],
+          "false"
+        );
+      }, 5000);
+    });
+  });
+
+  receiverInner.appendChild(contPlans);
+  receiver.appendChild(receiverInner);
+  innerCont.appendChild(receiver);
+  innerCont.scrollTop += 2200;
+};
+const plans = [
+  {
+    img: "images/class-1.jpg",
+    name: "Weight Lifting",
+    priceSession: "30",
+    link: "hsufhsiuhgiufshg_1",
+    priceMonth: "200",
+  },
+  {
+    img: "images/class-2.jpg",
+    name: "Cardio & Strength",
+    priceSession: "25",
+    link: "hsufhsiuhgiufshg_2",
+    priceMonth: "150",
+  },
+  {
+    img: "images/class-3.jpg",
+    name: "Power Yoga",
+    priceSession: "20",
+    link: "hsufhsiuhgiufshg_3",
+    priceMonth: "120",
+  },
+  {
+    img: "images/class-4.jpg",
+    name: "The Fitness Pack",
+    priceSession: "50",
+    link: "hsufhsiuhgiufshg_4",
+    priceMonth: "300",
+  },
+];
+
+function checkForClassPurchase(message) {
+  const purchaseKeywords = [
+    "buy a class",
+    "enroll in a session",
+    "get a membership",
+    "sign up for training",
+    "access courses",
+    "purchase sessions",
+    "join a program",
+    "register for a class",
+    "obtain a membership",
+    "enlist in a course",
+    "acquire a session",
+    "access training",
+    "secure a spot",
+    "invest in sessions",
+    "sign on for a course",
+    "engage in classes",
+    "purchase a membership",
+    "book a session",
+    "join a training program",
+    "procure access",
+    "reserve a spot",
+    "enroll for a course",
+    "gain session access",
+    "commit to classes",
+    "obtain course access",
+    "get a training pass",
+    "secure class entry",
+  ];
+  const lowerCaseMessage = message.toLowerCase();
+
+  // Check if the message contains any purchase-related keywords
+  const foundKeyword = purchaseKeywords.some((keyword) =>
+    lowerCaseMessage.includes(keyword)
+  );
+
+  return foundKeyword;
+}
