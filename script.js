@@ -238,7 +238,7 @@ const displayOnScreen = (elem, role, options, addDes) => {
     var message =
       "Hi, respond as a fitness expert. Give me tips for " +
       elem +
-      ".  Let it be detailed but not more than 100 words, and let our conversation flow by asking me relevant questions, and add emojis too!.";
+      ".  Let it be simple and precise and not more than 100 words, and let our conversation flow by asking me relevant question at the end, and add emojis too!.";
     replyMessage(message);
     return;
   }
@@ -292,7 +292,6 @@ const displayOnScreen = (elem, role, options, addDes) => {
             innerCont.style.height = "85%";
             inputMessage.focus();
           } else if (item.innerText.toLocaleLowerCase() == "show plans") {
-            console.log("rice");
             displayOnScreen(item.innerText.toLocaleLowerCase(), "sender", []);
             var animatedCont = addAnimate("reciever");
             innerCont.appendChild(animatedCont);
@@ -433,7 +432,7 @@ sendButton.addEventListener("click", () => {
   designSection.style.opacity = "0.3";
   const message =
     inputMessage.value +
-    ". Pls reply me simply and as a fitness expert. Let it be detailed but not more than 100 words, and let our conversation flow by asking me relevant questions, and add emojis too!.";
+    ". Pls reply me simply and as a fitness expert. Let it be simple and precise and not more than 100 words, and let our conversation flow by asking me relevant question at the end, and add emojis too!.";
   const anime = document.getElementsByClassName("anime")[0];
   if (anime) {
     innerCont.removeChild(anime);
