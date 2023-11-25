@@ -357,8 +357,8 @@ const replyMessage = async (message) => {
   Athletic performance improvement
   Fitness Gear & Equipment Advice:`;
 
-  var url = "http://localhost:8080/chat";
-  // var url = "https://fitness-backend-coe8.onrender.com/chat";
+  // var url = "http://localhost:8080/chat";
+  var url = "https://fitness-backend-coe8.onrender.com/chat";
 
   await fetch(url, {
     method: "POST",
