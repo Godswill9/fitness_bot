@@ -293,7 +293,7 @@ const displayOnScreen = (elem, role, options, addDes) => {
             inputMessage.focus();
           } else if (item.innerText.toLocaleLowerCase() == "show plans") {
             console.log("rice");
-            displayOnScreen(item.innerText, "sender", []);
+            displayOnScreen(item.innerText.toLocaleLowerCase(), "sender", []);
             var animatedCont = addAnimate("reciever");
             innerCont.appendChild(animatedCont);
             innerCont.scrollTop += 2000;
@@ -357,8 +357,8 @@ const replyMessage = async (message) => {
   Athletic performance improvement
   Fitness Gear & Equipment Advice:`;
 
-  // var url = "http://localhost:8080/chat";
-  var url = "https://fitness-backend-coe8.onrender.com/chat";
+  var url = "http://localhost:8080/chat";
+  // var url = "https://fitness-backend-coe8.onrender.com/chat";
 
   await fetch(url, {
     method: "POST",
@@ -380,18 +380,6 @@ const replyMessage = async (message) => {
         return;
       } else {
         requestCount += 1;
-        if (requestCount == 5) {
-          displayOnScreen(addDivAfterFullStop(res.data), "reciever", []);
-          setTimeout(() => {
-            displayOnScreen(
-              "Would you like to checkout our plans?",
-              "reciever2",
-              ["SHOW PLANS"],
-              "false"
-            );
-          }, 1500);
-          return;
-        }
         if (checkForClassPurchase(message)) {
           displayOnScreen(addDivAfterFullStop(res.data), "receiver", []);
           setTimeout(() => {
@@ -404,7 +392,18 @@ const replyMessage = async (message) => {
           }, 1500);
           return;
         }
-
+        if (requestCount == 5) {
+          displayOnScreen(addDivAfterFullStop(res.data), "reciever", []);
+          setTimeout(() => {
+            displayOnScreen(
+              "Would you like to checkout our plans?",
+              "reciever2",
+              ["SHOW PLANS"],
+              "false"
+            );
+          }, 1500);
+          return;
+        }
         displayOnScreen(addDivAfterFullStop(res.data), "reciever", []);
         // console.log(res.data);
       }
@@ -584,28 +583,28 @@ const displayPlans = (arr) => {
 const plans = [
   {
     img: "images/class-1.jpg",
-    name: "Weight Lifting",
+    name: "Basic plan",
     priceSession: "30",
     link: "hsufhsiuhgiufshg_1",
     priceMonth: "200",
   },
   {
     img: "images/class-2.jpg",
-    name: "Cardio & Strength",
+    name: "Standard plan",
     priceSession: "25",
     link: "hsufhsiuhgiufshg_2",
     priceMonth: "150",
   },
   {
     img: "images/class-3.jpg",
-    name: "Power Yoga",
+    name: "Premium plan",
     priceSession: "20",
     link: "hsufhsiuhgiufshg_3",
     priceMonth: "120",
   },
   {
     img: "images/class-4.jpg",
-    name: "The Fitness Pack",
+    name: "Tiered plan",
     priceSession: "50",
     link: "hsufhsiuhgiufshg_4",
     priceMonth: "300",
@@ -641,6 +640,7 @@ function checkForClassPurchase(message) {
     "obtain course access",
     "get a training pass",
     "secure class entry",
+    "pricing plan",
   ];
   const lowerCaseMessage = message.toLowerCase();
 

@@ -59,18 +59,26 @@
 }
 .container .introduction .in1 {
   opacity: 0;
+  color: white;
+  font-weight: bold;
   transform: translateX(-200%);
 }
 .container .introduction .in2 {
   opacity: 0;
+  color: white;
+  font-weight: bold;
   transform: translateX(200%);
 }
 .container .introduction .in3 {
   opacity: 0;
+  color: white;
+  font-weight: bold;
   transform: translateX(-200%);
 }
 .container .introduction .in4 {
   opacity: 0;
+  color: white;
+  font-weight: bold;
   transform: translateX(200%);
 }
 .container .introduction .startBut {
